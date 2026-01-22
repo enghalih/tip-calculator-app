@@ -1,0 +1,307 @@
+@use "_variables" as *;
+
+html {
+  font-size: 62.5%; // 1rem = 10px
+  font-family: $font-family-main;
+}
+
+/* 1. Use a more-intuitive box-sizing model */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+*:not(dialog) {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  /* 4. Add accessible line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  background-color: $grey-200;
+  font-family: $font-family-main;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 6. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+// 2. Layout & Components
+.header {
+  padding: $spacing-400 0;
+}
+
+.calculator {
+  background-color: $color-white;
+  padding: $spacing-400;
+  border-radius: 2.5rem;
+  width: 100%;
+  max-width: 92rem;
+  box-shadow: 0 3.2rem 4.8rem rgba($grey-600, 0.1);
+  display: grid;
+  gap: $spacing-400;
+
+  // Responsive Desktop
+  @media (min-width: 48rem) {
+    grid-template-columns: 1fr 1fr;
+    padding: $spacing-600;
+    gap: $spacing-600;
+    width: 90%;
+  }
+
+  &__group {
+    margin-bottom: $spacing-400;
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &--error {
+      .calculator__error-msg {
+        display: block;
+      }
+
+      .calculator__input {
+        outline: 2px solid $orange-400;
+      }
+
+      .calculator__input:focus {
+        outline: 2px solid $orange-400;
+      }
+    }
+  }
+
+  &__label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-100;
+  }
+
+  &__label {
+    @include text-preset-5;
+    color: $grey-600;
+  }
+
+  &__error-msg {
+    @include text-preset-6;
+    color: $orange-400;
+    display: none; // Munculkan dengan JS jika input 0
+  }
+
+  &__input-wrapper {
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 1.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.3rem;
+      height: 1.6rem;
+      background-repeat: no-repeat;
+      pointer-events: none;
+    }
+
+    &--dollar::before {
+      background-image: url("images/icon-dollar.svg");
+    }
+    &--person::before {
+      background-image: url("images/icon-person.svg");
+    }
+  }
+
+  &__input {
+    @include text-preset-3;
+    width: 100%;
+    background-color: $grey-50;
+    border: none;
+    border-radius: 0.5rem;
+    padding: $spacing-100 $spacing-200;
+    text-align: right;
+    color: $green-900;
+    transition: outline 0.1s ease;
+    cursor: pointer;
+
+    &::placeholder {
+      color: $grey-400;
+      opacity: 0.5;
+    }
+    &:focus {
+      outline: 2px solid $green-400;
+    }
+
+    &--custom {
+      @include text-preset-3;
+      padding: $spacing-100;
+      &::placeholder {
+        text-align: center;
+        color: $grey-400;
+        opacity: 1;
+      }
+    }
+
+    // Menghilangkan tanda panah di Chrome, Safari, Edge, Opera
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    // Menghilangkan tanda panah di Firefox
+    &[type="number"] {
+      appearance: textfield;
+    }
+  }
+
+  &__tip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6rem;
+    margin-top: $spacing-200;
+
+    @media (min-width: 480px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__tip-btn {
+    @include text-preset-3;
+    background-color: $green-900;
+    color: $color-white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: $spacing-100;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $green-200;
+      color: $green-900;
+    }
+
+    &--active {
+      background-color: $green-400;
+      color: $green-900;
+    }
+  }
+
+  // Right Display Panel
+  &__display {
+    background-color: $green-900;
+    padding: $spacing-400;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @media (min-width: 768px) {
+      padding: $spacing-600 $spacing-400;
+    }
+  }
+
+  &__result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-300;
+  }
+
+  &__result-title {
+    @include text-preset-5;
+    color: $color-white;
+    display: block;
+  }
+
+  &__result-subtitle {
+    @include text-preset-6;
+    color: $grey-400;
+  }
+
+  &__result-value {
+    @include text-preset-2; // Gunakan preset 2 untuk mobile agar tidak overflow
+    color: $green-400;
+
+    @media (min-width: 480px) {
+      @include text-preset-1;
+    }
+  }
+
+  &__reset-btn {
+    @include text-preset-4;
+    width: 100%;
+    background-color: $green-400;
+    color: $green-900;
+    border: none;
+    border-radius: 0.5rem;
+    padding: $spacing-100;
+    margin-top: $spacing-400;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:disabled {
+      background-color: $green-750;
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: $green-200;
+    }
+  }
+}
