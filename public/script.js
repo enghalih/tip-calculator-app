@@ -1,3 +1,5 @@
+const DEBUG = false;
+
 const billEl = document.getElementById("bill");
 const peopleEl = document.getElementById("people");
 const tipEl = document.getElementById("tip");
@@ -5,14 +7,14 @@ const customTipEl = document.getElementById("custom-tip");
 const totalTipEl = document.getElementById("total-tip");
 const totalEl = document.getElementById("total");
 const resetEl = document.getElementById("reset");
-const calculatorGroupEl = document.getElementById('calculator__group');
+const calculatorGroupEl = document.getElementById("calculator__group");
 const formEl = document.getElementById("calculator__form");
 
 let bill = 0;
 let people = 0;
 let tip = 0;
 
-formEl.addEventListener('reset', () => {
+formEl.addEventListener("reset", () => {
   bill = 0;
   people = 0;
   tip = 0;
@@ -23,10 +25,10 @@ formEl.addEventListener('reset', () => {
   changeTotalTip();
 
   resetEl.disabled = true;
-})
+});
 
 billEl?.addEventListener("input", (e) => {
-  bill = parseFloat(e.target.value);
+  bill = parseFloat(e.target.value) || 0;
 
   if (!validate(people)) {
     return;
@@ -37,7 +39,7 @@ billEl?.addEventListener("input", (e) => {
 });
 
 peopleEl?.addEventListener("input", (e) => {
-  people = parseInt(e.target.value);
+  people = parseInt(e.target.value) || 0;
 
   if (!validate(people)) {
     return;
@@ -48,7 +50,7 @@ peopleEl?.addEventListener("input", (e) => {
 });
 
 customTipEl?.addEventListener("input", (e) => {
-  tip = parseFloat(e.target.value / 100);
+  tip = parseFloat(e.target.value) / 100 || 0;
 
   clearButtonsTip();
 
@@ -56,13 +58,12 @@ customTipEl?.addEventListener("input", (e) => {
     return;
   }
 
-
   changeTotalTip(bill, tip, people);
   changeTotal(bill, tip, people);
 });
 
 tipEl?.addEventListener("click", (e) => {
-  e = e.target.closest(".calculator__tip-btn");
+  e = e.target.closest(".calculator__tip-btn") || 0;
   if (!e) return;
 
   const value = parseFloat(e.dataset.value);
@@ -84,7 +85,7 @@ function changeTotalTip(bill, tip, people) {
     return;
   }
 
-  const totalTip = ((bill * tip) / people || 0);
+  const totalTip = (bill * tip) / people || 0;
   totalTipEl.innerHTML = "$" + totalTip.toFixed(2);
   debug(bill, tip, people);
 }
@@ -94,32 +95,39 @@ function changeTotal(bill, tip, people) {
     return;
   }
 
-  const total = ((bill * (tip + 1)) / people || 0);
+  const total = (bill * (tip + 1)) / people || 0;
   totalEl.innerHTML = "$" + total.toFixed(2);
 }
 
 function validate(people) {
-  const inputExist = !(people || bill || tip);
-  debug(inputExist, people,bill, tip );
-  resetEl.disabled = inputExist;
-  if (people <= 0 || people == NaN) {
-    calculatorGroupEl?.classList.toggle('calculator__group--error', true);
+  const inputExist = people || bill || tip;
+  debug(inputExist, people, bill, tip);
+  resetEl.disabled = !inputExist;
+  if (people <= 0) {
+    calculatorGroupEl?.classList.toggle("calculator__group--error", true);
+    peopleEl.ariaInvalid = true;
     return false;
   } else {
-    calculatorGroupEl?.classList.toggle('calculator__group--error', false);
+    calculatorGroupEl?.classList.toggle("calculator__group--error", false);
+    peopleEl.ariaInvalid = false;
     return true;
   }
 }
 
 function debug(...content) {
+  if (!DEBUG) {
+    return;
+  }
+
   console.log("[DEBUG] ", content);
 }
 
 function clearButtonsTip(activeButton = false) {
-  debug('clear button')
-  buttonsTip = document.querySelectorAll(".calculator__tip-btn");
+  debug("clear button");
+  const buttonsTip = document.querySelectorAll(".calculator__tip-btn");
   buttonsTip.forEach((btnTip) => {
     const active = btnTip === activeButton;
     btnTip.classList.toggle("calculator__tip-btn--active", active);
+    btnTip.ariaPressed = active;
   });
 }

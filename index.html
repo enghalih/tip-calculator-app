@@ -11,8 +11,8 @@
       sizes="32x32"
       href="./images/favicon-32x32.png"
     />
-    
-    <link rel="stylesheet" href="public/style.css">
+
+    <link rel="stylesheet" href="public/style.css" />
 
     <script defer src="public/script.js"></script>
 
@@ -20,7 +20,8 @@
   </head>
   <body>
     <header class="header">
-      <img class="header__logo" src="images/logo.svg">
+      <img class="header__logo" src="images/logo.svg" alt="logo" />
+      <h1 style="display: none">Splitter App</h1>
     </header>
 
     <main class="calculator">
@@ -42,20 +43,24 @@
           </div>
         </div>
 
-        <div class="calculator__group">
-          <span class="calculator__label">Select Tip %</span>
+        <div class="calculator__group" aria-labelledby="calculator__label">
+          <span class="calculator__label" id="calculator__label">Select Tip %</span>
           <div class="calculator__tip-grid" id="tip">
-            <button data-value="0.05" type="button" class="calculator__tip-btn">5%</button>
-            <button
-              type="button"
-              class="calculator__tip-btn"
-              data-value="0.1"
-            >
+            <button aria-pressed="false" data-value="0.05" type="button" class="calculator__tip-btn">
+              5%
+            </button>
+            <button aria-pressed="false" type="button" class="calculator__tip-btn" data-value="0.1">
               10%
             </button>
-            <button data-value="0.15" type="button" class="calculator__tip-btn">15%</button>
-            <button data-value="0.25" type="button" class="calculator__tip-btn">25%</button>
-            <button data-value="0.5" type="button" class="calculator__tip-btn">50%</button>
+            <button aria-pressed="false" data-value="0.15" type="button" class="calculator__tip-btn">
+              15%
+            </button>
+            <button aria-pressed="false" data-value="0.25" type="button" class="calculator__tip-btn">
+              25%
+            </button>
+            <button aria-pressed="false" data-value="0.5" type="button" class="calculator__tip-btn">
+              50%
+            </button>
             <input
               type="number"
               id="custom-tip"
@@ -71,7 +76,7 @@
             <label for="people" class="calculator__label"
               >Number of People</label
             >
-            <span class="calculator__error-msg" id="people-error"
+            <span class="calculator__error-msg" id="people-error" role="alert"
               >Can't be zero</span
             >
           </div>
@@ -84,12 +89,16 @@
               class="calculator__input"
               placeholder="0"
               aria-describedby="people-error"
+              aria-invalid = "false"
             />
           </div>
         </div>
+
+        <button type="submit" style="display: none;"></button>
       </form>
 
       <section class="calculator__display" aria-live="polite">
+        <h2 style="display: none;">Calculation Results</h2>
         <div class="calculator__result-row">
           <div class="calculator__result-label">
             <span class="calculator__result-title">Tip Amount</span>
@@ -106,7 +115,15 @@
           <div class="calculator__result-value" id="total">$0.00</div>
         </div>
 
-        <button type="reset" form="calculator__form" id="reset" class="calculator__reset-btn" disabled>RESET</button>
+        <button
+          type="reset"
+          form="calculator__form"
+          id="reset"
+          class="calculator__reset-btn"
+          disabled
+        >
+          RESET
+        </button>
       </section>
     </main>
   </body>
